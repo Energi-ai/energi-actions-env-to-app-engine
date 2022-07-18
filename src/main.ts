@@ -5,20 +5,28 @@ const run = async (): Promise<void> => {
   try {
     const envVars = core.getInput('env_vars');
     const configurationFilePath = core.getInput('configuration-file');
-    const outFile = core.getInput('out-file');
+    const outFilePath = core.getInput('out-file');
 
     const envVarsMap = envVars.split(',').map(item => {
       const [key, value] = item.split('=');
       return { key, value };
     });
 
-    const configurationFile = fs.promises.readFile(configurationFilePath, {
-      encoding: 'utf-8',
+    const configurationFile = await fs.promises.readFile(
+      configurationFilePath,
+      {
+        encoding: 'utf-8',
+      },
+    );
+    envVarsMap.forEach(envVar => {
+      configurationFile.replace(`$${envVar.key}`, `'${envVar.value}'`);
     });
+
+    await fs.promises.writeFile(outFilePath, configurationFile);
 
     core.debug(`envVarsMap ${JSON.stringify(envVarsMap)}`);
     core.debug(`configurationFile: ${configurationFile}`);
-    core.debug(`outFile: ${outFile}`);
+    core.debug(`outFile: ${outFilePath}`);
 
     // if (envFile) {
     //     dotenv.config({path: path.resolve(process.cwd(), envFile)})
