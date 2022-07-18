@@ -1,0 +1,55 @@
+name: '[PRD] Deploy to Google App Engine'
+on:
+  push:
+    branches:
+      - production
+jobs:
+  build:
+    name: GAE Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install modules
+        run: npm ci
+      - name: Run lint
+        run: npm run lint
+      - name: Run tests
+        run: npm test
+
+      - id: deployment
+        uses: altinukshini/deployment-action@releases/v1
+        name: Create GitHub deployment
+        with:
+          token: "${{ github.token }}"
+          environment: production
+      
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.gcp_prod_credentials }}
+      - uses: google-github-actions/deploy-appengine@main
+        with:
+          deliverables: 'app.prod.yaml'
+      
+      - id: deployment-success
+        name: Update deployment status (success)
+        if: success()
+        uses: altinukshini/deployment-status@releases/v1
+        with:
+          token: "${{ github.token }}"
+          state: "success"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - id: deployment-failure
+        name: Update deployment status (failure)
+        if: failure()
+        uses: altinukshini/deployment-status@releases/v1
+        with:
+          token: "${{ github.token }}"
+          state: "failure"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
