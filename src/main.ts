@@ -19,7 +19,7 @@ const run = async (): Promise<void> => {
       },
     );
     envVarsMap.forEach(envVar => {
-      configurationFile.replace(`$${envVar.key}`, `'${envVar.value}'`);
+      configurationFile.replace(`\${${envVar.key}}`, `'${envVar.value}'`);
     });
 
     await fs.promises.writeFile(outFilePath, configurationFile);
