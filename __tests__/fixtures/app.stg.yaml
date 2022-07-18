@@ -1,0 +1,18 @@
+runtime: nodejs16
+
+service: energi-email
+
+instance_class: F2
+
+env_variables:
+  EMAIL_FROM: no-reply@energi.ai
+  SECRET: ${SECRET}
+handlers:
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
+
+vpc_access_connector:
+  name: projects/intrepid-vista-324007/locations/europe-west2/connectors/vpc-connector
+  egress_setting: all-traffic

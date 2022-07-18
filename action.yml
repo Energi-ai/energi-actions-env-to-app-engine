@@ -1,0 +1,29 @@
+name: 'ENV to app engine'
+author: 'Energi.AI'
+description: |-
+  Using this action you can pass env variable 
+  to app engine config file.
+
+inputs:
+  env_vars:
+    description: |-
+      List of key-value pairs to set as environment variables in the form KEY1=VALUE1,KEY2=VALUE2. Only one of env_vars or env_vars_file can be specified.
+    required: true
+
+  configuration-file:
+    description: |-
+      app engine configuration file.
+    required: true
+  out-file:
+    description: |-
+      New file with configuraton.
+    required: true
+
+branding:
+  icon: dollar-sign
+  color: purple
+
+runs:
+  using: 'node16'
+  main: 'dist/main/index.js'
+  post: 'dist/post/index.js'

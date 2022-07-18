@@ -1,0 +1,29 @@
+name: '[STG] Test deploy'
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    name: GAE Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install modules
+        run: npm ci
+      - name: Run lint
+        run: npm run lint
+      - uses: ./
+        with:
+          env-env_vars: SECRET=test
+          configuration-file: __tests__/fixtures/app.stg.yaml
+          out-file: __tests__/fixtures/app.yaml
+
+      - run: cat __tests__/fixtures/app.yaml
+
+
