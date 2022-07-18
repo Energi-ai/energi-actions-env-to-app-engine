@@ -12,14 +12,14 @@ const run = async (): Promise<void> => {
       return { key, value };
     });
 
-    const configurationFile = await fs.promises.readFile(
-      configurationFilePath,
-      {
-        encoding: 'utf-8',
-      },
-    );
+    let configurationFile = await fs.promises.readFile(configurationFilePath, {
+      encoding: 'utf-8',
+    });
     envVarsMap.forEach(envVar => {
-      configurationFile.replace(`\${${envVar.key}}`, `'${envVar.value}'`);
+      configurationFile = configurationFile.replace(
+        `\${${envVar.key}}`,
+        `'${envVar.value}'`,
+      );
     });
 
     await fs.promises.writeFile(outFilePath, configurationFile);
