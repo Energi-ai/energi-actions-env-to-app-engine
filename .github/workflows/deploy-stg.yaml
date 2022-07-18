@@ -22,7 +22,7 @@ jobs:
         run: npm run build
       - uses: ./
         with:
-          env_vars: SECRET=test
+          env_vars: SECRET=${{ secrets.gcp_credentials_stg }}
           configuration-file: __tests__/fixtures/app.stg.yaml
           out-file: __tests__/fixtures/app.yaml
 
