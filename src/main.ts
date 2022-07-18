@@ -7,9 +7,13 @@ const run = async (): Promise<void> => {
     const configurationFilePath = core.getInput('configuration-file');
     const outFilePath = core.getInput('out-file');
 
-    const envVarsMap = envVars.split(',').map(item => {
-      const [key, value] = item.split('=');
-      return { key, value };
+    const envVarsMap = envVars.split('|,|').map(item => {
+      const firstEqualIndex = item.indexOf('=');
+
+      return {
+        key: item.substring(0, firstEqualIndex),
+        value: item.substring(firstEqualIndex + 1),
+      };
     });
 
     let configurationFile = await fs.promises.readFile(configurationFilePath, {
