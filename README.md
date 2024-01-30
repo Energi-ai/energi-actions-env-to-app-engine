@@ -13,7 +13,7 @@ jobs:
       id-token: 'write'
 
     steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
     
         - name: Add env
             uses: Energi-ai/energi-actions-env-to-app-engine@main
