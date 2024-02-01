@@ -29,5 +29,5 @@ branding:
   color: purple
 
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/main/index.js'
